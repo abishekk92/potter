@@ -1,14 +1,14 @@
 import nltk
 import os
-book_1 = open(os.path.join("dataset","book_1.txt"),'r').read()
-sentences=nltk.sent_tokenize(book_1)
-sentences=[nltk.word_tokenize(sent) for sent in sentences]
-sentences=[nltk.pos_tag(sent) for sent in sentences]
-chunked=[nltk.ne_chunk(sent) for sent in sentences]
-for chunk in chunked:
-	if hasattr(chunk,'node'):		
-		if chunk.node == 'PERSON':
-			name=' '.join(leave[0] for leave in chunk.leaves())
-			print name
-	else:
-		print "Nope"
+
+output_file=open('names_noise.txt','w')
+for i in xrange(1,8):
+	book_name="book_%s.txt" %(str(i))
+	book=open(os.path.join('dataset',"book_%s.txt" % (str(i)))).read()
+	for sentences in nltk.sent_tokenize(book):
+		for chunked in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sentences))):
+			if hasattr(chunked,'node'):
+				if chunked.node == 'PERSON':
+					name=' '.join(leaf[0] for leaf in chunked.leaves())
+					output_file.write(name+"\n")
+				
